@@ -5,12 +5,18 @@ namespace OthelloServer.ViewModels
 {
     public class GameboardViewModel
     {
+        // The default dimensions of the squares on our gameboard.
+        private double squareWidth = 30;
+        private double squareHeight = 30;
+
         // Our collecction of GameboardVM
         public ObservableCollection<GameboardSquareViewModel> GameboardVM { get; set; }
 
-        private double squareWidth = 25;
-        private double squareHeight = 25;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="model">The model associated with the viewmodel</param>
         public GameboardViewModel(Gameboard model)
         {
             GameboardVM = new ObservableCollection<GameboardSquareViewModel>();

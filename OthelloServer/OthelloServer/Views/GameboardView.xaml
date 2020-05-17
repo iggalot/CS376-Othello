@@ -6,19 +6,20 @@
              xmlns:local="clr-namespace:OthelloServer.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Border Padding="10"
-            Background="White">
-        <Grid Background="Black">
-            <Grid            
+
+    <!--<Grid Background="Black">
+        <Canvas Name="GameArea" ClipToBounds="True" Width="400" Height="400">
+            
+        </Canvas>
+        <Grid            
                 Width="{Binding SquareWidth}"
                 Height="{Binding SquareHeight}"
-                Background="DarkGreen"
+                
                 >
-            </Grid>
-            <Label  HorizontalAlignment="Center" 
-                        VerticalAlignment="Center" 
-                        Content="{Binding Index}" FontSize="{Binding SquareWidth}" Foreground="White"/>
         </Grid>
-    </Border>
+        <Label  HorizontalAlignment="Center" 
+                        VerticalAlignment="Center" 
+                        Content="{Binding SquareWidth}" FontSize="{Binding SquareWidth}" Foreground="White"/>
+    </Grid>-->
 
 </UserControl>
