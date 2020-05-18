@@ -28,24 +28,7 @@ namespace OthelloServer
             // Create the view model for the gameboard that we just created
             gameboardVM = new GameboardViewModel(gameboard);
 
-            MessageBox.Show(gameboard.Display());
-
-            //Initial board setup
-            // get middle index
-            int mid_row = gameboard.rows / 2;
-            int mid_col = gameboard.cols / 2;
-            int mid_index = (mid_row-1) * gameboard.cols + mid_col -1;
-
-            // Add the top of the middle rows
-            gameboard.GameBoard[mid_index].Piece = Tokens.TokenP1;
-            gameboard.GameBoard[mid_index + 1].Piece = Tokens.TokenP2;
-
-            // Add the bottom of the middle rows
-            gameboard.GameBoard[mid_index + gameboard.cols].Piece = Tokens.TokenP2;
-            gameboard.GameBoard[mid_index + gameboard.cols+1].Piece = Tokens.TokenP1;
-            MessageBox.Show(gameboard.Display());
-
-            // set the datacontext for this view
+            // Set the datacontext for this view
             this.DataContext = gameboardVM;
 
         }
@@ -58,28 +41,68 @@ namespace OthelloServer
         private void DrawGameArea()
         {
             bool doneDrawingBackground = false;
-            int nextX = 0;
-            int nextY = 0;
+            int nextX = 0; // upper left x-coordinate of game square pixel
+            int nextY = 0; // upper left y-coordinate of game square pixel
             int index = 0;
             int rowCounter = 0;
-            int colCounter = 0;
+            int colCounter;
+            bool isBorder;  // a flag to determine if a square is a border element
             bool nextIsOdd = false;
 
-            // The square 0 of the 
-            bool firstSquare = true;
+            // Our gamepieces
+            double pieceWidth = (gameboardVM.GameboardVM[index].SquareWidth * 0.8);
+            double pieceHeight = (gameboardVM.GameboardVM[index].SquareHeight * 0.8);
 
-            while(!doneDrawingBackground)
+            // Compute the offset to center the piece in the game square
+            double xOffset = ((int)gameboardVM.GameboardVM[index].SquareWidth - pieceWidth) / 2.0;
+            double yOffset = ((int)gameboardVM.GameboardVM[index].SquareHeight - pieceHeight) / 2.0;
+
+
+            while (!doneDrawingBackground)
             {
+                isBorder = false;
+                // Our game square
                 Rectangle rect = new Rectangle
                 {
                     Width = (int)gameboardVM.GameboardVM[index].SquareWidth,
                     Height = (int)gameboardVM.GameboardVM[index].SquareHeight,
-                    Fill = nextIsOdd ? Brushes.DarkGreen : Brushes.LightGreen
+                    Fill = Brushes.DarkGreen,
+                    StrokeThickness = 1,
+                    Stroke = Brushes.Black
                 };
 
                 GameArea.Children.Add(rect);
                 Canvas.SetTop(rect, nextY);
                 Canvas.SetLeft(rect, nextX);
+
+                Brush fillBrush;
+                // Our game pieces.
+                switch (gameboard.GameBoard[index].Piece)
+                {
+                    case Tokens.TokenBorder:
+                        fillBrush = Brushes.Red;
+                        break;
+                    case Tokens.TokenP1:
+                        fillBrush = Brushes.White;
+                        break;
+                    case Tokens.TokenP2:
+                        fillBrush = Brushes.Black;
+                        break;
+                    default:
+                        fillBrush = Brushes.Blue;
+                        break;
+                }
+                
+                Ellipse ellipse = new Ellipse
+                {
+                    Width = pieceWidth,
+                    Height = pieceHeight,
+                    Fill = fillBrush
+                };
+                GameArea.Children.Add(ellipse);
+                Canvas.SetTop(ellipse, nextY + yOffset);
+                Canvas.SetLeft(ellipse, nextX + xOffset);
+
 
                 colCounter = index % gameboard.rows;
 
@@ -89,17 +112,25 @@ namespace OthelloServer
                 // Make the top and bottom border rows blue
                 if ((rowCounter == 0) || (rowCounter == gameboard.rows - 1))
                 {
-                    rect.Fill = Brushes.Blue;     
+                    rect.Fill = Brushes.Blue;
+                    isBorder = true;
                 }
 
                 // Make the left and right border cols red
-                if((colCounter % gameboard.cols == 0) || (colCounter % gameboard.cols == (gameboard.cols - 1)))
+                if ((colCounter % gameboard.cols == 0) || (colCounter % gameboard.cols == (gameboard.cols - 1)))
                 {
                     rect.Fill = Brushes.Red;
+                    isBorder = true;
+                }
+
+                // If it's not a border element, create and draw a piece for it
+                if(!isBorder)
+                { 
+
                 }
 
                 // If we've reached the end of the current
-                if(colCounter == gameboard.cols - 1)
+                if (colCounter == gameboard.cols - 1)
                 {
                     nextX = 0;
                     nextY += (int)gameboardVM.GameboardVM[index].SquareHeight;
@@ -112,10 +143,11 @@ namespace OthelloServer
                 // If we've reached the lest element of the gameboard, then set the flag for done
                 if ((rowCounter >= gameboard.rows) || (index >= gameboardVM.GameboardVM.Count))
                     doneDrawingBackground = true;
-
-                
-
             }
+
+
         }
+
+
     }
 }

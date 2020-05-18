@@ -1,5 +1,6 @@
 ﻿using OthelloServer.Models;
 using System;
+using System.Windows;
 
 namespace OthelloServer.ViewModels
 {
@@ -38,5 +39,7 @@ namespace OthelloServer.ViewModels
         /// Getter for the  width of this square
         /// </summary>
         public double SquareWidth { get => square_width; set => square_width = value; }
+
+
     }
 }
