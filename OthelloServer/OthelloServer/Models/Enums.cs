@@ -19,4 +19,11 @@ namespace OthelloServer.Models
         TokenP2 = 2,
         TokenUnclaimed = 3
     }
+
+    public enum GamePieceShapes
+    {
+        SHAPE_UNDEFINED = 0,
+        SHAPE_CIRCLE = 1,
+        SHAPE_SQUARE = 2
+    }
 }

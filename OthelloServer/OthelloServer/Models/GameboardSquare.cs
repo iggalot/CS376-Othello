@@ -5,25 +5,26 @@ namespace OthelloServer.Models
     public class GameboardSquare
     {
         private int index;
-        private Tokens piece;
-        private int row;
-        private int col;
-        private Gameboard board;
+        private readonly int row;
+        private readonly int col;
 
         public GameboardSquare(int r, int c, Gameboard board, Tokens p)
         {
             row = r;
             col = c;
             index = (row * board.rows + board.cols);
-            piece = p;
-
+            Piece = new Gamepiece(Tokens.TokenUnclaimed, GamePieceShapes.SHAPE_UNDEFINED);
         }
 
+        /// <summary>
+        /// The index of the gamesquare in the board array.
+        /// </summary>
+        /// <returns></returns>
         public int Index() { return index; }
 
-        public Tokens Piece {
-            get => piece;
-            set => this.piece = value; 
-        }
+        /// <summary>
+        /// The gamepiece associated with this square
+        /// </summary>
+        public Gamepiece Piece { get; set; }
     }
 }

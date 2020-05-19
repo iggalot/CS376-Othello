@@ -22,7 +22,7 @@ namespace OthelloServer
         {
             InitializeComponent();
 
-            // Create the board
+            // Create the default board
             gameboard = new Gameboard(8, 8);
             
             // Create the view model for the gameboard that we just created
@@ -35,6 +35,10 @@ namespace OthelloServer
 
         private void Window_ContentRendered(object sender, System.EventArgs e)
         {
+            //Start the Game
+            gameboardVM.StartGame();
+
+            //Draw the area
             DrawGameArea();
         }
 
@@ -46,7 +50,6 @@ namespace OthelloServer
             int index = 0;
             int rowCounter = 0;
             int colCounter;
-            bool isBorder;  // a flag to determine if a square is a border element
             bool nextIsOdd = false;
 
             // Our gamepieces
@@ -60,7 +63,6 @@ namespace OthelloServer
 
             while (!doneDrawingBackground)
             {
-                isBorder = false;
                 // Our game square
                 Rectangle rect = new Rectangle
                 {
@@ -75,34 +77,12 @@ namespace OthelloServer
                 Canvas.SetTop(rect, nextY);
                 Canvas.SetLeft(rect, nextX);
 
-                Brush fillBrush;
-                // Our game pieces.
-                switch (gameboard.GameBoard[index].Piece)
-                {
-                    case Tokens.TokenBorder:
-                        fillBrush = Brushes.Red;
-                        break;
-                    case Tokens.TokenP1:
-                        fillBrush = Brushes.White;
-                        break;
-                    case Tokens.TokenP2:
-                        fillBrush = Brushes.Black;
-                        break;
-                    default:
-                        fillBrush = Brushes.Blue;
-                        break;
-                }
-                
-                Ellipse ellipse = new Ellipse
-                {
-                    Width = pieceWidth,
-                    Height = pieceHeight,
-                    Fill = fillBrush
-                };
-                GameArea.Children.Add(ellipse);
-                Canvas.SetTop(ellipse, nextY + yOffset);
-                Canvas.SetLeft(ellipse, nextX + xOffset);
-
+                // Create our game pieces for the board based on the gameboard model
+                Gamepiece piece = new Gamepiece(gameboard.GameBoard[index].Piece.Owner, gameboard.GameBoard[index].Piece.PieceShape);
+                GamepieceViewModel pieceVM = new GamepieceViewModel(gameboardVM.GameboardVM[index].PieceVM.Piece, pieceWidth, pieceHeight);
+                GameArea.Children.Add(pieceVM.PieceShape);
+                Canvas.SetTop(pieceVM.PieceShape, nextY + yOffset);
+                Canvas.SetLeft(pieceVM.PieceShape, nextX + xOffset);
 
                 colCounter = index % gameboard.rows;
 
@@ -113,20 +93,12 @@ namespace OthelloServer
                 if ((rowCounter == 0) || (rowCounter == gameboard.rows - 1))
                 {
                     rect.Fill = Brushes.Blue;
-                    isBorder = true;
                 }
 
                 // Make the left and right border cols red
                 if ((colCounter % gameboard.cols == 0) || (colCounter % gameboard.cols == (gameboard.cols - 1)))
                 {
                     rect.Fill = Brushes.Red;
-                    isBorder = true;
-                }
-
-                // If it's not a border element, create and draw a piece for it
-                if(!isBorder)
-                { 
-
                 }
 
                 // If we've reached the end of the current
@@ -140,7 +112,7 @@ namespace OthelloServer
                 
                 index++;
 
-                // If we've reached the lest element of the gameboard, then set the flag for done
+                // If we've reached the last element of the gameboard, then set the flag for done
                 if ((rowCounter >= gameboard.rows) || (index >= gameboardVM.GameboardVM.Count))
                     doneDrawingBackground = true;
             }

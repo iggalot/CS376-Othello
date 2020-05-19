@@ -36,73 +36,31 @@ namespace OthelloServer.Models
                     // create a gameboard square
                     GameboardSquare square = new GameboardSquare(i, j, this, Tokens.TokenUnclaimed);
 
+                    // create a gamepiece for each gameboard square
+                    Gamepiece piece = new Gamepiece(Tokens.TokenUnclaimed, GamePieceShapes.SHAPE_UNDEFINED);
+                    square.Piece = piece;
+
                     int index = i * cols + j;
                     // Add a horizontal border to top and bottom
                     if ((j == 0) || (j == cols - 1))
                     {
 
-                        square.Piece = Tokens.TokenBorder;
+                        square.Piece.Owner = Tokens.TokenBorder;
                     }
                     // Add a vertical border to left and right
                     else if ((i == 0) || (i == rows - 1))
                     {
-                        square.Piece = Tokens.TokenBorder;
+                        square.Piece.Owner = Tokens.TokenBorder;
                     }
                     else
-                        square.Piece = Tokens.TokenUnclaimed;
+                        square.Piece.Owner = Tokens.TokenUnclaimed;
 
                     // add the square to the collection
                     GameBoard[index] = square;
 
                     //MessageBox.Show("i: " + i.ToString() + "   j: " + j.ToString() + "   index: " + index.ToString());
-
                 }
             }
-
-            // Now start the game
-
-            StartGame();
-        }
-
-        /// <summary>
-        /// Return the contents of the gameboard as a string, using the Token enum values
-        /// </summary>
-        /// <returns></returns>
-        public string Display()
-        {
-            string str = "";
-
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < cols; j++)
-                {
-                    int index = i * cols + j;
-                    str += ((int)GameBoard[index].Piece).ToString();
-                }
-                str += "\n";
-            }
-
-            return str;
-        }
-
-        /// <summary>
-        /// Sets up the game board, with the initial configuration
-        /// </summary>
-        public void StartGame()
-        {
-            //Initial board setup
-            // get middle index
-            int mid_row = rows / 2;
-            int mid_col = cols / 2;
-            int mid_index = (mid_row - 1) * cols + mid_col - 1;
-
-            // Add the top of the middle rows
-            GameBoard[mid_index].Piece = Tokens.TokenP1;
-            GameBoard[mid_index + 1].Piece = Tokens.TokenP2;
-
-            // Add the bottom of the middle rows
-            GameBoard[mid_index + cols].Piece = Tokens.TokenP2;
-            GameBoard[mid_index + cols + 1].Piece = Tokens.TokenP1;
         }
 
         /// <summary>
