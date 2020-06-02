@@ -1,4 +1,7 @@
 ﻿using OthelloServer.Models;
+using System;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -100,7 +103,42 @@ namespace OthelloServer.ViewModels
                     };
                     break;
             }
+
+            // Add the hover effect for the shapes using MouseEnter and MouseLeace
+            shape.MouseEnter += new System.Windows.Input.MouseEventHandler(shape_MouseEnter);
+            shape.MouseLeave += new System.Windows.Input.MouseEventHandler(shape_MouseLeave);
+
             return shape;
+        }
+
+        /// <summary>
+        /// Event that restores the color on hover leave
+        /// </summary>
+        /// <param name="sender">The UI Element that is being hovered over</param>
+        /// <param name="e"></param>
+        private void shape_MouseLeave(object sender, MouseEventArgs e)
+        {
+            // If the piece isnt currently owned by P1 or P2, do nothing
+            if ((Piece.Owner == Tokens.TokenUnclaimed) || (Piece.Owner == Tokens.TokenBorder))
+                return;
+
+            Shape shape = (Shape)sender;
+            shape.Fill = GetColor(Piece.Owner);
+        }
+
+        /// <summary>
+        /// Event that changes the color on hover enter
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void shape_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // If the piece isnt currently owned by a P1 or P2, do nothing
+            if ((Piece.Owner == Tokens.TokenUnclaimed) || (Piece.Owner == Tokens.TokenBorder))
+                return;
+
+            Shape shape = (Shape)sender;
+            shape.Fill = Brushes.Red;
         }
         #endregion
     }

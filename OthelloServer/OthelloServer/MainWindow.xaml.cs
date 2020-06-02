@@ -1,7 +1,9 @@
 ﻿using OthelloServer.Models;
 using OthelloServer.ViewModels;
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -30,7 +32,6 @@ namespace OthelloServer
 
             // Set the datacontext for this view
             this.DataContext = gameboardVM;
-
         }
 
         private void Window_ContentRendered(object sender, System.EventArgs e)
@@ -72,7 +73,7 @@ namespace OthelloServer
                     StrokeThickness = 1,
                     Stroke = Brushes.Black
                 };
-
+               
                 GameArea.Children.Add(rect);
                 Canvas.SetTop(rect, nextY);
                 Canvas.SetLeft(rect, nextX);
@@ -83,6 +84,17 @@ namespace OthelloServer
                 GameArea.Children.Add(pieceVM.PieceShape);
                 Canvas.SetTop(pieceVM.PieceShape, nextY + yOffset);
                 Canvas.SetLeft(pieceVM.PieceShape, nextX + xOffset);
+
+                // if there's not a game piece in the square, add the click and hover events
+                if (piece.Owner == Tokens.TokenUnclaimed)
+                {
+                    // Add a mouse click event to the game square
+                    rect.MouseUp += new MouseButtonEventHandler(square_MouseUp);
+
+                    // Add a mouse hover on enter / leave event
+                    rect.MouseEnter += new MouseEventHandler(shape_MouseEnter);
+                    rect.MouseLeave += new MouseEventHandler(shape_MouseLeave);
+                }
 
                 colCounter = index % gameboard.rows;
 
@@ -116,10 +128,38 @@ namespace OthelloServer
                 if ((rowCounter >= gameboard.rows) || (index >= gameboardVM.GameboardVM.Count))
                     doneDrawingBackground = true;
             }
-
-
         }
 
+        /// <summary>
+        /// Event that restores the color on hover leave
+        /// </summary>
+        /// <param name="sender">The UI Element that is being hovered over</param>
+        /// <param name="e"></param>
+        private void shape_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Shape shape = (Shape)sender;
+            shape.Fill = Brushes.DarkGreen;
+        }
 
+        /// <summary>
+        /// Event that changes the color on hover enter
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void shape_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Shape shape = (Shape)sender;
+            shape.Fill = Brushes.LightGreen;
+        }
+
+        /// <summary>
+        /// Event to handle the clicking of the piece shape.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void square_MouseUp(object sender, MouseEventArgs e)
+        {
+            MessageBox.Show("An empty square was clicked");
+        }
     }
 }

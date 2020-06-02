@@ -59,6 +59,11 @@ namespace OthelloServer.ViewModels
 
         #endregion
 
+
+
+
+
+
         #region Public Methods
         /// <summary>
         /// Adds a gamepiece to this square
